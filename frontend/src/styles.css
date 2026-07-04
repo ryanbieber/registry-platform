@@ -1,0 +1,72 @@
+:root {
+  font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+  color: #11202c;
+  background:
+    radial-gradient(circle at top left, rgba(103, 162, 255, 0.18), transparent 28%),
+    linear-gradient(180deg, #f4efe5 0%, #eef3f7 100%);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.app-shell {
+  min-height: 100vh;
+  padding: 24px;
+}
+
+.app-grid {
+  display: grid;
+  gap: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.panel {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(17, 32, 44, 0.1);
+  border-radius: 18px;
+  padding: 20px;
+  box-shadow: 0 14px 34px rgba(17, 32, 44, 0.08);
+}
+
+.nav {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.results-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.results-table th,
+.results-table td {
+  text-align: left;
+  padding: 12px;
+  border-bottom: 1px solid rgba(17, 32, 44, 0.08);
+}
+
+.filters-grid,
+.detail-grid,
+.status-grid {
+  display: grid;
+  gap: 16px;
+}
+
+@media (min-width: 900px) {
+  .detail-grid,
+  .status-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

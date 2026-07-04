@@ -1,0 +1,52 @@
+state,jurisdiction_type,official_registry_url,access_surface,recommended_acquisition_path,notes
+Alabama,state,http://www.communitynotification.com/cap_main.php?office=54247,vendor_hosted_public_registry_ui,manual lookup or obtain written permission from the state or vendor for any automated access,NSOPW points to a Community Notification vendor portal
+Alaska,state,https://dps.alaska.gov/sorweb/,official_public_registry_ui,manual lookup first then agency contact for any machine-readable access,Official DPS registry portal
+Arizona,state,https://www.azdps.gov/services/public-services-center/sex-offender-compliance,official_landing_page,follow the agency path to the public registry and ask DPS about any permitted data access,Official DPS informational or program page
+Arkansas,state,https://www.ark.org/offender-search/index.php,official_public_registry_ui,manual lookup first then agency contact for any machine-readable access,Official offender search page
+California,state,https://www.meganslaw.ca.gov/,official_public_registry_ui,manual lookup first then review state terms before any limited connector work,Official Megan's Law portal
+Colorado,state,https://www.colorado.gov/apps/cdps/sor/,official_public_registry_ui,manual lookup first then agency contact for any machine-readable access,Official CDPS application portal
+Connecticut,state,http://www.communitynotification.com/cap_office_disclaimer.php?office=54567,vendor_hosted_public_registry_ui,manual lookup or obtain written permission from the state or vendor for any automated access,NSOPW points to a Community Notification disclaimer page
+Delaware,state,http://sexoffender.dsp.delaware.gov/,official_public_registry_ui,manual lookup first then agency contact for any machine-readable access,Official DSP registry portal
+District of Columbia,district,http://sexoffender.dc.gov/,official_public_registry_ui,manual lookup first then agency contact for any machine-readable access,Included for operational completeness
+Florida,state,http://offender.fdle.state.fl.us/offender/Search.jsp,official_public_registry_ui,manual lookup first then agency contact for any machine-readable access,Official FDLE search page
+Georgia,state,http://state.sor.gbi.ga.gov/sort_public,official_public_registry_ui,manual lookup first then agency contact for any machine-readable access,Official GBI public registry
+Hawaii,state,http://sexoffenders.ehawaii.gov/,official_public_registry_ui,manual lookup first then agency contact for any machine-readable access,Official eHawaii registry
+Idaho,state,https://apps.isp.idaho.gov/sor_id/,official_public_registry_ui,manual lookup first then agency contact for any machine-readable access,Official ISP application portal
+Illinois,state,https://isp.illinois.gov/Sor,official_public_registry_ui,manual lookup first then agency contact for any machine-readable access,Official Illinois State Police registry
+Indiana,state,https://www.icrimewatch.net/indiana.php,vendor_hosted_public_registry_ui,manual lookup or obtain written permission from the state or vendor for any automated access,NSOPW points to an ICrimeWatch portal
+Iowa,state,https://www.iowasexoffender.gov/,official_public_registry_ui,manual lookup first then agency contact for any machine-readable access,Official Iowa registry
+Kansas,state,https://www.kansas.gov/kbi/,official_landing_page,follow the agency path to the public registry and ask KBI about any permitted data access,Official Kansas Bureau of Investigation landing page
+Kentucky,state,http://kspsor.state.ky.us/,official_public_registry_ui,manual lookup first then agency contact for any machine-readable access,Official Kentucky State Police registry
+Louisiana,state,https://www.icrimewatch.net/louisiana.php,vendor_hosted_public_registry_ui,manual lookup or obtain written permission from the state or vendor for any automated access,NSOPW points to an ICrimeWatch portal
+Maine,state,http://sor.informe.org/sor/,official_public_registry_ui,manual lookup first then agency contact for any machine-readable access,Official registry portal
+Maryland,state,https://www.dpscs.state.md.us/onlineservs/socem/default.shtml,official_public_registry_ui,manual lookup first then agency contact for any machine-readable access,Official DPSCS page
+Massachusetts,state,http://www.mass.gov/eopss/agencies/sorb,official_landing_page,follow the agency path to the public registry and ask the board about any permitted data access,Official SORB landing page
+Michigan,state,https://mspsor.com/,official_public_registry_ui,manual lookup first then agency contact for any machine-readable access,Official Michigan registry
+Minnesota,state,"https://por.state.mn.us/OffenderSearch.html ; http://coms.doc.state.mn.us/publicregistrantsearch",multiple_official_entry_points,review both official portals and contact the responsible agency before any automation,Minnesota has BCA and DOC public search surfaces
+Mississippi,state,http://state.sor.dps.ms.gov/,official_public_registry_ui,manual lookup first then agency contact for any machine-readable access,Official DPS registry
+Missouri,state,https://www.mshp.dps.missouri.gov/CJ38/search.jsp,official_public_registry_ui,manual lookup first then agency contact for any machine-readable access,Official Highway Patrol search page
+Montana,state,https://app.doj.mt.gov/apps/svow/,official_public_registry_ui,manual lookup first then agency contact for any machine-readable access,Official DOJ application portal
+Nebraska,state,https://sor.nebraska.gov/,official_public_registry_ui,manual lookup first then agency contact for any machine-readable access,Official Nebraska registry
+Nevada,state,https://sexoffenders.nv.gov/,official_public_registry_ui,manual lookup first then agency contact for any machine-readable access,Official Nevada registry
+New Hampshire,state,https://business.nh.gov/NSOR/search.aspx,official_public_registry_ui,manual lookup first then agency contact for any machine-readable access,Official search page
+New Jersey,state,https://njsp.njoag.gov/nj-sex-offender-registry/,official_public_registry_ui,manual lookup first then review state terms before any limited connector work,Official NJSP registry page
+New Mexico,state,http://communitynotification.com/nm/newmexico/,vendor_hosted_public_registry_ui,manual lookup or obtain written permission from the state or vendor for any automated access,NSOPW points to a Community Notification vendor portal
+New York,state,http://www.criminaljustice.ny.gov/SomsSUBDirectory/search_index.jsp,official_public_registry_ui,manual lookup first then agency contact for any machine-readable access,Official DCJS search page
+North Carolina,state,http://sexoffender.ncsbi.gov/,official_public_registry_ui,manual lookup first then agency contact for any machine-readable access,Official SBI registry
+North Dakota,state,http://www.sexoffender.nd.gov/,official_public_registry_ui,manual lookup first then agency contact for any machine-readable access,Official North Dakota registry
+Ohio,state,http://www.communitynotification.com/oh/ohio/,vendor_hosted_public_registry_ui,manual lookup or obtain written permission from the state or vendor for any automated access,NSOPW points to a Community Notification vendor portal
+Oklahoma,state,https://sors.doc.ok.gov/,official_public_registry_ui,manual lookup first then agency contact for any machine-readable access,Official DOC registry
+Oregon,state,https://www.oregon.gov/osp/programs/SOR/Pages/default.aspx,official_landing_page,follow the agency path to the public registry and ask OSP about any permitted data access,Official OSP program page
+Pennsylvania,state,http://www.pameganslaw.state.pa.us/,official_public_registry_ui,manual lookup first then agency contact for any machine-readable access,Official Megan's Law portal
+Rhode Island,state,http://www.sheriffalerts.com/cap_main.php?office=56404,vendor_hosted_public_registry_ui,manual lookup or obtain written permission from the state or vendor for any automated access,NSOPW points to a Sheriff Alerts vendor portal
+South Carolina,state,http://scor.sled.sc.gov/,official_public_registry_ui,manual lookup first then agency contact for any machine-readable access,Official SLED registry
+South Dakota,state,https://sor.sd.gov/,official_public_registry_ui,manual lookup first then agency contact for any machine-readable access,Official South Dakota registry
+Tennessee,state,https://www.tn.gov/tbi/general-information/tennessee-sex-offender-registry.html,official_landing_page,follow the agency path to the public registry and ask TBI about any permitted data access,Official TBI landing page
+Texas,state,https://publicsite.dps.texas.gov/SexOffenderRegistry,official_public_registry_ui,manual lookup first then agency contact for any machine-readable access,Official Texas DPS registry
+Utah,state,http://www.communitynotification.com/cap_office_disclaimer.php?office=54438,vendor_hosted_public_registry_ui,manual lookup or obtain written permission from the state or vendor for any automated access,NSOPW points to a Community Notification disclaimer page
+Vermont,state,http://vcic.vermont.gov/sor,official_public_registry_ui,manual lookup first then agency contact for any machine-readable access,Official VCIC page
+Virginia,state,https://www.vspsor.com/,official_public_registry_ui,manual lookup first then agency contact for any machine-readable access,Official Virginia registry
+Washington,state,http://www.icrimewatch.net/washington.php,vendor_hosted_public_registry_ui,manual lookup or obtain written permission from the state or vendor for any automated access,NSOPW points to an ICrimeWatch portal
+West Virginia,state,https://apps.wv.gov/StatePolice/SexOffender/,official_public_registry_ui,manual lookup first then agency contact for any machine-readable access,Official State Police registry
+Wisconsin,state,https://appsdoc.wi.gov/public,official_public_registry_ui,manual lookup first then agency contact for any machine-readable access,Official DOC public portal
+Wyoming,state,http://www.communitynotification.com/cap_main.php?office=55699,vendor_hosted_public_registry_ui,manual lookup or obtain written permission from the state or vendor for any automated access,NSOPW points to a Community Notification vendor portal

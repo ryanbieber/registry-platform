@@ -93,6 +93,17 @@ def list_sources(session: Session | None = None) -> list[SourceSummary]:
             access_surface=row.access_surface,
             recommended_acquisition_path=row.recommended_acquisition_path,
             jurisdiction_type=row.jurisdiction_type,
+            state_code=row.state_code,
+            registry_http_status=row.registry_http_status,
+            final_registry_url=row.final_registry_url,
+            registry_host=row.registry_host,
+            registry_page_title=row.registry_page_title,
+            registry_content_type=row.registry_content_type,
+            vendor_name=row.vendor_name,
+            robots_txt_url=row.robots_txt_url,
+            robots_txt_status=row.robots_txt_status,
+            metadata_retrieved_at=row.metadata_retrieved_at,
+            metadata_error=row.metadata_error,
         )
         for row in rows
     ]

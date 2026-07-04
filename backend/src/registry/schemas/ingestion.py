@@ -29,3 +29,14 @@ class SourceSummary(BaseModel):
     access_surface: Optional[str] = None
     recommended_acquisition_path: Optional[str] = None
     jurisdiction_type: Optional[str] = None
+    state_code: Optional[str] = None
+    registry_http_status: Optional[int] = None
+    final_registry_url: Optional[str] = None
+    registry_host: Optional[str] = None
+    registry_page_title: Optional[str] = None
+    registry_content_type: Optional[str] = None
+    vendor_name: Optional[str] = None
+    robots_txt_url: Optional[str] = None
+    robots_txt_status: Optional[int] = None
+    metadata_retrieved_at: Optional[datetime] = None
+    metadata_error: Optional[str] = None

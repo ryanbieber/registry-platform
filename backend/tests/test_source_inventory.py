@@ -9,6 +9,7 @@ def test_inventory_csv_has_expected_rows() -> None:
     rows = load_source_inventory_rows()
     assert len(rows) == 51
     assert any(row["state"] == "California" for row in rows)
+    assert any(row["state"] == "Texas" and row["state_code"] == "TX" for row in rows)
 
 
 def test_seed_registry_sources() -> None:
@@ -27,3 +28,6 @@ def test_seed_registry_sources() -> None:
         california = next(row for row in seeded_sources if row.state == "California")
         assert california.official_registry_url == "https://www.meganslaw.ca.gov/"
         assert california.supports_fetch is True
+        assert california.state_code == "CA"
+        assert california.registry_http_status == 200
+        assert california.registry_page_title == "Disclaimer - Megan's Law Website"

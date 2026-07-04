@@ -2,7 +2,7 @@ from datetime import datetime, timezone
 
 from sqlmodel import Session, select
 
-from registry.models import IngestionRun, Registrant
+from registry.models import IngestionRun, Registrant, RegistrySource
 from registry.schemas import RegistrantDetail, RegistrantListItem, SourceSummary
 from registry.sources import get_connector, list_connectors
 
@@ -58,16 +58,43 @@ def get_registrant(session: Session, registrant_id: str) -> RegistrantDetail | N
     )
 
 
-def list_sources() -> list[SourceSummary]:
+def list_sources(session: Session | None = None) -> list[SourceSummary]:
+    connectors_by_state = {connector.state: connector for connector in list_connectors() if connector.state}
+    connectors_by_name = {connector.name: connector for connector in list_connectors()}
+
+    if session is None:
+        return [
+            SourceSummary(
+                name=connector.name,
+                state=connector.state,
+                enabled=True,
+                supports_fetch=True,
+                notes="Skeleton connector only. Implement gentle, compliant ingestion per source.",
+            )
+            for connector in connectors_by_state.values()
+        ]
+
+    rows = session.exec(select(RegistrySource).order_by(RegistrySource.state)).all()
+    if not rows:
+        return list_sources()
+
     return [
         SourceSummary(
-            name=connector.name,
-            state=connector.state,
+            name=(
+                connectors_by_state.get(row.state).name
+                if connectors_by_state.get(row.state)
+                else row.state.lower().replace(" ", "-")
+            ),
+            state=row.state,
             enabled=True,
-            supports_fetch=True,
-            notes="Skeleton connector only. Implement gentle, compliant ingestion per source.",
+            supports_fetch=row.state in connectors_by_state or row.state.lower().replace(" ", "-") in connectors_by_name,
+            notes=row.notes or "State registry metadata imported from the national source directory.",
+            official_registry_url=row.official_registry_url,
+            access_surface=row.access_surface,
+            recommended_acquisition_path=row.recommended_acquisition_path,
+            jurisdiction_type=row.jurisdiction_type,
         )
-        for connector in list_connectors()
+        for row in rows
     ]
 
 

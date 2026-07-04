@@ -67,6 +67,7 @@ Raw source payloads, source URL, source state, `last_seen`, and ingestion run ID
 
 - State registry access inventory overview: `docs/state-registry-access.md`
 - State registry access CSV: `data/reference/state_registry_access.csv`
+- Database seed command for the national source table: `uv run registry seed-sources`
 
 These files are intended to help plan compliant connectors around official registry entry points, not to justify scraping.
 

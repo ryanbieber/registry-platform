@@ -7,6 +7,7 @@ from sqlmodel import Session
 
 from registry.db import engine
 from registry.services import ingest_source, list_sources
+from registry.source_inventory import seed_registry_sources
 from registry.sources import get_connector
 
 app = typer.Typer(help="Registry platform CLI")
@@ -38,6 +39,13 @@ def export_csv(output: Path = Path("exports/registrants.csv")) -> None:
         writer = csv.DictWriter(file_handle, fieldnames=["id", "external_id", "full_name", "risk_level", "last_seen"])
         writer.writeheader()
     typer.echo(f"Wrote skeleton CSV to {output}")
+
+
+@app.command("seed-sources")
+def seed_sources() -> None:
+    with Session(engine) as session:
+        inserted, updated = seed_registry_sources(session)
+        typer.echo(f"registry_sources seeded: inserted={inserted} updated={updated}")
 
 
 if __name__ == "__main__":

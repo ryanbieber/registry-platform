@@ -25,3 +25,7 @@ class SourceSummary(BaseModel):
     enabled: bool
     supports_fetch: bool
     notes: str
+    official_registry_url: Optional[str] = None
+    access_surface: Optional[str] = None
+    recommended_acquisition_path: Optional[str] = None
+    jurisdiction_type: Optional[str] = None

@@ -23,7 +23,7 @@ Source basis:
 
 ## Data file
 
-The detailed state-by-state inventory is in [data/reference/state_registry_access.csv](/home/carnufex/Documents/Codex/2026-07-03-make-the-skeleton-only-no-actual/registry-platform/data/reference/state_registry_access.csv).
+The detailed state-by-state inventory is in [data/reference/state_registry_access.csv](/home/carnufex/registry-platform/data/reference/state_registry_access.csv).
 
 ## Notes
 

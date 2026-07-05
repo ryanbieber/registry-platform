@@ -1,6 +1,6 @@
-# Backend
+# RegistryRadar Backend
 
-FastAPI backend skeleton for the registry platform.
+FastAPI backend skeleton for RegistryRadar.
 
 Use `uv` for environment and dependency management:
 

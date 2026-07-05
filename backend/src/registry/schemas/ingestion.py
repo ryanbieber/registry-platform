@@ -8,6 +8,7 @@ from pydantic import BaseModel
 class IngestRequest(BaseModel):
     dry_run: bool = True
     limit: Optional[int] = None
+    batch_size: Optional[int] = None
 
 
 class IngestionRunRead(BaseModel):

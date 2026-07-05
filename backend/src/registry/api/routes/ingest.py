@@ -10,5 +10,11 @@ router = APIRouter(tags=["ingestion"])
 
 @router.post("/ingest/{source}", response_model=IngestionRunRead)
 async def ingest(source: str, request: IngestRequest, session: Session = Depends(get_session)) -> IngestionRunRead:
-    run = await ingest_source(session, source, dry_run=request.dry_run, limit=request.limit)
+    run = await ingest_source(
+        session,
+        source,
+        dry_run=request.dry_run,
+        limit=request.limit,
+        batch_size=request.batch_size,
+    )
     return IngestionRunRead.model_validate(run, from_attributes=True)

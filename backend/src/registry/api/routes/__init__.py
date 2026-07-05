@@ -1,3 +1,3 @@
-from registry.api.routes import health, ingest, registrants, sources
+from registry.api.routes import addresses, health, ingest, registrants, spatial, sources
 
-__all__ = ["health", "ingest", "registrants", "sources"]
+__all__ = ["addresses", "health", "ingest", "registrants", "sources", "spatial"]

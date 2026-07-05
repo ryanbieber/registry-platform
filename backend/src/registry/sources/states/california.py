@@ -1,7 +1,5 @@
 from typing import Any
 
-from sqlmodel import Session
-
 from registry.sources.base import SourceConnector
 
 
@@ -34,18 +32,3 @@ class CaliforniaStubConnector(SourceConnector):
             }
             for record in parsed_records
         ]
-
-    def upsert(
-        self,
-        session: Session,
-        normalized_records: list[dict[str, Any]],
-        *,
-        dry_run: bool = True,
-    ) -> dict[str, Any]:
-        return {
-            "source": self.name,
-            "state": self.state,
-            "dry_run": dry_run,
-            "records_seen": len(normalized_records),
-            "message": "Stub connector completed without database writes.",
-        }

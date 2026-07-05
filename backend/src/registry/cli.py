@@ -3,27 +3,29 @@ from pathlib import Path
 
 import anyio
 import typer
-from sqlmodel import Session
+from sqlmodel import Session, select
 
+from registry.enrichment import refresh_address_supporting_information
 from registry.db import engine
+from registry.models import Address
 from registry.services import ingest_source, list_sources
 from registry.source_inventory import seed_registry_sources
 from registry.sources import get_connector
 
-app = typer.Typer(help="Registry platform CLI")
+app = typer.Typer(help="RegistryRadar CLI")
 
 
 @app.command("ingest-source")
-def ingest_source_command(source: str, dry_run: bool = True, limit: int | None = None) -> None:
+def ingest_source_command(source: str, dry_run: bool = True, limit: int | None = None, batch_size: int | None = None) -> None:
     with Session(engine) as session:
-        run = anyio.run(ingest_source, session, source, dry_run=dry_run, limit=limit)
+        run = anyio.run(ingest_source, session, source, dry_run=dry_run, limit=limit, batch_size=batch_size)
         typer.echo(f"{run.source_name}:{run.status}:{run.id}")
 
 
 @app.command("ingest-all")
-def ingest_all(dry_run: bool = True, limit: int | None = None) -> None:
+def ingest_all(dry_run: bool = True, limit: int | None = None, batch_size: int | None = None) -> None:
     for source in list_sources():
-        ingest_source_command(source.name, dry_run=dry_run, limit=limit)
+        ingest_source_command(source.name, dry_run=dry_run, limit=limit, batch_size=batch_size)
 
 
 @app.command("validate-source")
@@ -46,6 +48,26 @@ def seed_sources() -> None:
     with Session(engine) as session:
         inserted, updated = seed_registry_sources(session)
         typer.echo(f"registry_sources seeded: inserted={inserted} updated={updated}")
+
+
+@app.command("enrich-addresses")
+def enrich_addresses(limit: int | None = None, stale_only: bool = True) -> None:
+    with Session(engine) as session:
+        query = select(Address).order_by(Address.updated_at)
+        if limit is not None:
+            query = query.limit(limit)
+        rows = session.exec(query).all()
+        refreshed = 0
+        for address in rows:
+            result = anyio.run(
+                refresh_address_supporting_information,
+                session,
+                address.id,
+                force=not stale_only,
+            )
+            if result is not None:
+                refreshed += 1
+        typer.echo(f"address enrichments refreshed: {refreshed}")
 
 
 if __name__ == "__main__":

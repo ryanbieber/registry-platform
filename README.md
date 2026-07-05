@@ -1,6 +1,6 @@
-# Registry Platform
+# RegistryRadar
 
-Skeleton project for a unified U.S. sex offender registry data platform with a FastAPI backend, React frontend, Postgres/PostGIS persistence, and source-specific ingestion connectors.
+Skeleton project for RegistryRadar, a unified U.S. sex offender registry data platform with a FastAPI backend, React frontend, Postgres/PostGIS persistence, and source-specific ingestion connectors.
 
 ## Stack
 
@@ -53,14 +53,32 @@ The connector skeleton enforces a staged ingestion pipeline:
 
 Raw source payloads, source URL, source state, `last_seen`, and ingestion run IDs are explicitly modeled for auditability.
 
+## Completed Connectors
+
+Implemented and verified state connectors:
+
+- California
+- Florida
+- Iowa
+- Michigan
+- Minnesota
+- Missouri
+- Nebraska
+- North Carolina
+- North Dakota
+- South Dakota
+- Texas
+- Wisconsin
+
 ## Frontend skeleton highlights
 
 - Search registrants page
 - Registrant detail page
+- Iowa H3 spatial map page
 - Source status page
 - Search filters component
 - Results table component
-- Address/map placeholder component
+- Address supporting-information component
 - Source ingestion status panel component
 
 ## Research artifacts
@@ -92,6 +110,23 @@ npm install
 npm run dev
 ```
 
+### GitHub Pages static map build
+
+```bash
+cd frontend
+npm run build:pages
+```
+
+This build mode ships the map as a static React page with local data only, so it can be published to GitHub Pages without a backend.
+
+### GitHub Pages deployment
+
+The repository includes `.github/workflows/pages.yml`, which builds `frontend/dist` and publishes it with GitHub Pages.
+
+In the repository settings, set Pages source to **GitHub Actions**. Do not point Pages at the repository root if you want the React app to render, because that will serve this README instead of the built frontend.
+
+The build also includes `frontend/public/.nojekyll` so GitHub Pages serves the static asset tree without Jekyll rewriting.
+
 ### Docker Compose
 
 ```bash
@@ -103,7 +138,9 @@ docker compose up
 - `GET /health`
 - `GET /registrants`
 - `GET /registrants/{id}`
+- `POST /addresses/{address_id}/enrich`
 - `GET /sources`
+- `GET /spatial/iowa/h3?resolution=10`
 - `POST /ingest/{source}`
 
 ## CLI surface

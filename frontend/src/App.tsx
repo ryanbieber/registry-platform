@@ -2,7 +2,7 @@ import { NavLink, Route, Routes, useLocation } from "react-router-dom";
 
 import { STATIC_MAP_MODE } from "./config";
 import { RegistrantDetailPage } from "./pages/RegistrantDetailPage";
-import { IowaH3MapPage } from "./pages/IowaH3MapPage";
+import { UsaMapPage } from "./pages/UsaMapPage";
 import { SearchPage } from "./pages/SearchPage";
 import { SourceStatusPage } from "./pages/SourceStatusPage";
 
@@ -11,9 +11,9 @@ export default function App() {
 
   const staticRouteTree = (
     <Routes>
-      <Route path="/" element={<IowaH3MapPage />} />
-      <Route path="/map" element={<IowaH3MapPage />} />
-      <Route path="*" element={<IowaH3MapPage />} />
+      <Route path="/" element={<UsaMapPage />} />
+      <Route path="/map" element={<UsaMapPage />} />
+      <Route path="*" element={<UsaMapPage />} />
     </Routes>
   );
 
@@ -24,7 +24,7 @@ export default function App() {
   const routeTree = (
     <Routes>
       <Route path="/" element={<SearchPage />} />
-      <Route path="/map" element={<IowaH3MapPage />} />
+      <Route path="/map" element={<UsaMapPage />} />
       <Route path="/search" element={<SearchPage />} />
       <Route path="/registrants/:id" element={<RegistrantDetailPage />} />
       <Route path="/sources" element={<SourceStatusPage />} />

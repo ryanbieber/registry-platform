@@ -1,4 +1,5 @@
-import { useRef, useState, type PointerEvent, type WheelEvent } from "react";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 import {
   USA_ACTIVE_STATE_NAME,
@@ -16,22 +17,25 @@ import {
   type ViewportState,
   zoomAtPoint,
 } from "../lib/mapViewport";
+import { useSvgViewportControls } from "../lib/useSvgViewportControls";
 
 const ZOOM_STEP = 1.28;
-const DRAG_THRESHOLD_PX = 4;
-
-type DragState = {
-  pointerId: number;
-  startX: number;
-  startY: number;
-  startPanX: number;
-  startPanY: number;
-  startStateName: string | null;
-  moved: boolean;
-};
 
 function normalizeName(name: string | undefined): string {
   return name?.trim() ?? "";
+}
+
+function formatZoom(zoom: number): string {
+  return `${zoom.toFixed(2)}x`;
+}
+
+function getStateNameFromTarget(target: EventTarget | null): string | null {
+  if (!(target instanceof Element)) {
+    return null;
+  }
+
+  const stateElement = target.closest("[data-state-name]");
+  return normalizeName(stateElement?.getAttribute("data-state-name") ?? "") || null;
 }
 
 function fillForState(name: string, hovered: boolean, selected: boolean): string {
@@ -67,98 +71,52 @@ function strokeWidthForState(name: string, hovered: boolean, selected: boolean):
 }
 
 export function UsaMapPage() {
-  const [viewport, setViewport] = useState<ViewportState>(() => createInitialViewport());
+  const navigate = useNavigate();
   const [hoveredStateName, setHoveredStateName] = useState<string | null>(null);
   const [selectedStateName, setSelectedStateName] = useState<string | null>(null);
-  const [dragging, setDragging] = useState(false);
-  const dragStateRef = useRef<DragState | null>(null);
+  const {
+    dragging,
+    handlePointerCancel,
+    handlePointerDown,
+    handlePointerMove,
+    handlePointerUp,
+    handleWheel,
+    resetViewport,
+    viewport,
+    zoomFromCenter,
+  } = useSvgViewportControls<ViewportState, string>({
+    createInitialViewport,
+    getTargetId: getStateNameFromTarget,
+    onGestureStart: () => setHoveredStateName(null),
+    onTapTarget: (stateName) => {
+      if (stateName === USA_ACTIVE_STATE_NAME) {
+        navigate("/map/iowa");
+        return;
+      }
+
+      setSelectedStateName(stateName);
+    },
+    screenPointFromClient: (clientX, clientY, bounds) =>
+      screenPointFromClient(clientX, clientY, bounds, USA_MAP_VIEWBOX_WIDTH, USA_MAP_VIEWBOX_HEIGHT),
+    zoomAtPoint,
+  });
 
   const stateFeatures = USA_STATE_FEATURES;
 
   const activeState = stateFeatures.find((state) => normalizeName(state.properties?.name) === USA_ACTIVE_STATE_NAME) ?? null;
 
   function handleReset() {
-    setViewport(createInitialViewport());
+    resetViewport();
     setHoveredStateName(null);
     setSelectedStateName(null);
   }
 
-  function handleWheel(event: WheelEvent<SVGSVGElement>) {
-    event.preventDefault();
-    const bounds = event.currentTarget.getBoundingClientRect();
-    const anchor = screenPointFromClient(
-      event.clientX,
-      event.clientY,
-      bounds,
-      USA_MAP_VIEWBOX_WIDTH,
-      USA_MAP_VIEWBOX_HEIGHT,
-    );
-    const factor = Math.exp(-event.deltaY * 0.0013);
-    setViewport((current) => zoomAtPoint(current, anchor, current.zoom * factor));
+  function handleZoomIn() {
+    zoomFromCenter(ZOOM_STEP, USA_MAP_VIEWBOX_WIDTH, USA_MAP_VIEWBOX_HEIGHT);
   }
 
-  function handlePointerDown(event: PointerEvent<SVGSVGElement>) {
-    if (event.button !== 0) {
-      return;
-    }
-
-    const stateName = normalizeName((event.target as Element | null)?.closest("[data-state-name]")?.getAttribute("data-state-name") ?? "");
-    dragStateRef.current = {
-      pointerId: event.pointerId,
-      startX: event.clientX,
-      startY: event.clientY,
-      startPanX: viewport.panX,
-      startPanY: viewport.panY,
-      startStateName: stateName || null,
-      moved: false,
-    };
-    event.currentTarget.setPointerCapture(event.pointerId);
-  }
-
-  function handlePointerMove(event: PointerEvent<SVGSVGElement>) {
-    const state = dragStateRef.current;
-    if (!state || state.pointerId !== event.pointerId) {
-      return;
-    }
-
-    const bounds = event.currentTarget.getBoundingClientRect();
-    const scaleX = USA_MAP_VIEWBOX_WIDTH / bounds.width;
-    const scaleY = USA_MAP_VIEWBOX_HEIGHT / bounds.height;
-    const deltaX = event.clientX - state.startX;
-    const deltaY = event.clientY - state.startY;
-    const movedDistance = Math.hypot(deltaX, deltaY);
-
-    if (!state.moved && movedDistance >= DRAG_THRESHOLD_PX) {
-      state.moved = true;
-      setDragging(true);
-      setHoveredStateName(null);
-    }
-
-    if (state.moved) {
-      setViewport((current) => ({
-        ...current,
-        panX: state.startPanX + deltaX * scaleX,
-        panY: state.startPanY + deltaY * scaleY,
-      }));
-    }
-  }
-
-  function finishPointer(event: PointerEvent<SVGSVGElement>) {
-    const state = dragStateRef.current;
-    if (!state || state.pointerId !== event.pointerId) {
-      return;
-    }
-
-    if (!state.moved && state.startStateName) {
-      setSelectedStateName(state.startStateName);
-    }
-
-    dragStateRef.current = null;
-    setDragging(false);
-
-    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
-      event.currentTarget.releasePointerCapture(event.pointerId);
-    }
+  function handleZoomOut() {
+    zoomFromCenter(1 / ZOOM_STEP, USA_MAP_VIEWBOX_WIDTH, USA_MAP_VIEWBOX_HEIGHT);
   }
 
   return (
@@ -176,8 +134,8 @@ export function UsaMapPage() {
         viewBox={`0 0 ${USA_MAP_VIEWBOX_WIDTH} ${USA_MAP_VIEWBOX_HEIGHT}`}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
-        onPointerUp={finishPointer}
-        onPointerCancel={finishPointer}
+        onPointerUp={handlePointerUp}
+        onPointerCancel={handlePointerCancel}
         onPointerLeave={() => {
           if (!dragging) {
             setHoveredStateName(null);
@@ -227,6 +185,34 @@ export function UsaMapPage() {
           </g>
         </g>
       </svg>
+
+      <div className="map-overlay map-toolbar">
+        <div className="map-heading">
+          <div>
+            <p className="eyebrow">Spatial map</p>
+            <h1>USA overview</h1>
+          </div>
+        </div>
+        <div className="map-meta" aria-label="Map status">
+          <span>51 jurisdictions</span>
+          <span>{formatZoom(viewport.zoom)}</span>
+          <span>Tap Iowa for H3 grid</span>
+        </div>
+        <div className="map-controls" aria-label="Map controls">
+          <Link className="secondary-button map-action-link" to="/map/iowa" aria-label="Open Iowa grid">
+            Open Iowa
+          </Link>
+          <button className="secondary-button map-control" type="button" onClick={handleZoomOut} aria-label="Zoom out">
+            -
+          </button>
+          <button className="secondary-button map-control" type="button" onClick={handleZoomIn} aria-label="Zoom in">
+            +
+          </button>
+          <button className="secondary-button map-control" type="button" onClick={handleReset} aria-label="Reset view">
+            ↺
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

@@ -44,10 +44,16 @@ button:disabled {
   cursor: progress;
 }
 
-button.secondary-button {
+.secondary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(17, 32, 44, 0.14);
+  border-radius: 10px;
   background: rgba(255, 255, 255, 0.92);
   color: #11202c;
-  border-color: rgba(17, 32, 44, 0.14);
+  padding: 10px 14px;
+  cursor: pointer;
 }
 
 input {
@@ -344,6 +350,7 @@ input {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
+  align-items: center;
 }
 
 .map-control {
@@ -353,6 +360,11 @@ input {
   border-radius: 10px;
   font-size: 18px;
   line-height: 1;
+}
+
+.map-action-link {
+  min-height: 40px;
+  white-space: nowrap;
 }
 
 .map-svg {
@@ -482,7 +494,9 @@ input {
   position: fixed;
   inset: 0;
   overflow: hidden;
-  background: #eef2f7;
+  background:
+    radial-gradient(circle at top left, rgba(103, 162, 255, 0.18), transparent 28%),
+    linear-gradient(180deg, #f4efe5 0%, #eef3f7 100%);
 }
 
 .usa-map-svg {
@@ -517,6 +531,30 @@ input {
 
 .usa-map-state.is-active {
   filter: saturate(1.06);
+}
+
+@media (max-width: 720px) {
+  .map-toolbar {
+    top: 12px;
+    left: 12px;
+    right: 12px;
+    align-items: flex-start;
+  }
+
+  .map-controls {
+    width: 100%;
+  }
+
+  .map-inspector {
+    right: 12px;
+    bottom: 12px;
+    width: calc(100vw - 24px);
+    max-height: min(42vh, 320px);
+  }
+
+  .map-empty-state {
+    inset: 12px;
+  }
 }
 
 @media (min-width: 900px) {

@@ -1,6 +1,7 @@
 import { NavLink, Route, Routes, useLocation } from "react-router-dom";
 
 import { STATIC_MAP_MODE } from "./config";
+import { IowaH3MapPage } from "./pages/IowaH3MapPage";
 import { RegistrantDetailPage } from "./pages/RegistrantDetailPage";
 import { UsaMapPage } from "./pages/UsaMapPage";
 import { SearchPage } from "./pages/SearchPage";
@@ -13,6 +14,7 @@ export default function App() {
     <Routes>
       <Route path="/" element={<UsaMapPage />} />
       <Route path="/map" element={<UsaMapPage />} />
+      <Route path="/map/iowa" element={<IowaH3MapPage />} />
       <Route path="*" element={<UsaMapPage />} />
     </Routes>
   );
@@ -25,13 +27,14 @@ export default function App() {
     <Routes>
       <Route path="/" element={<SearchPage />} />
       <Route path="/map" element={<UsaMapPage />} />
+      <Route path="/map/iowa" element={<IowaH3MapPage />} />
       <Route path="/search" element={<SearchPage />} />
       <Route path="/registrants/:id" element={<RegistrantDetailPage />} />
       <Route path="/sources" element={<SourceStatusPage />} />
     </Routes>
   );
 
-  if (location.pathname === "/map") {
+  if (location.pathname.startsWith("/map")) {
     return routeTree;
   }
 

@@ -74,7 +74,7 @@ Implemented and verified state connectors:
 
 - Search registrants page
 - Registrant detail page
-- Full-screen USA spatial map page with Iowa active
+- Full-screen USA spatial map overview with Iowa H3 drill-down
 - Source status page
 - Search filters component
 - Results table component
@@ -117,7 +117,7 @@ cd frontend
 npm run build:pages
 ```
 
-This build mode ships the map as a static React page with local data only, so it can be published to GitHub Pages without a backend. The current Pages experience is a full-screen USA map with Iowa highlighted as the active state.
+This build mode ships the map as a static React page with local data only, so it can be published to GitHub Pages without a backend. The current Pages experience is a full-screen USA overview with an interactive Iowa H3 drill-down.
 
 ### GitHub Pages deployment
 

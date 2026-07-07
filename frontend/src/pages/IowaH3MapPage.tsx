@@ -1,8 +1,7 @@
-import { useEffect, useMemo, useRef, useState, type PointerEvent, type WheelEvent } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 
 import { type H3Cell } from "../api/client";
-import { STATIC_MAP_MODE } from "../config";
 import { getStaticIowaH3Map } from "../data/iowaH3MapData";
 import {
   MAP_VIEWBOX_HEIGHT,
@@ -16,23 +15,13 @@ import {
   type ViewportState,
   zoomAtPoint,
 } from "../lib/iowaH3Viewport";
+import { useSvgViewportControls } from "../lib/useSvgViewportControls";
 
 const ZOOM_STEP = 1.24;
-const DRAG_THRESHOLD_PX = 4;
 
 type ProjectedCell = H3Cell & {
   fill: string;
   points: string;
-};
-
-type DragState = {
-  pointerId: number;
-  startX: number;
-  startY: number;
-  startPanX: number;
-  startPanY: number;
-  startCellId: string | null;
-  moved: boolean;
 };
 
 function clamp(value: number, min: number, max: number): number {
@@ -65,11 +54,29 @@ function getCellIdFromTarget(target: EventTarget | null): string | null {
 }
 
 export function IowaH3MapPage() {
-  const [viewport, setViewport] = useState<ViewportState>(() => createInitialViewport());
   const [hoveredCellId, setHoveredCellId] = useState<string | null>(null);
   const [selectedCellId, setSelectedCellId] = useState<string | null>(null);
-  const [dragging, setDragging] = useState(false);
-  const dragStateRef = useRef<DragState | null>(null);
+  const {
+    dragging,
+    handlePointerCancel,
+    handlePointerDown,
+    handlePointerMove,
+    handlePointerUp,
+    handleWheel,
+    resetViewport,
+    viewport,
+    zoomFromCenter,
+  } = useSvgViewportControls<ViewportState, string>({
+    createInitialViewport,
+    getTargetId: getCellIdFromTarget,
+    onGestureStart: () => setHoveredCellId(null),
+    onTapTarget: (cellId) => {
+      setSelectedCellId(cellId);
+      setHoveredCellId(cellId);
+    },
+    screenPointFromClient,
+    zoomAtPoint,
+  });
   const resolution = useMemo(() => resolutionForZoom(viewport.zoom), [viewport.zoom]);
   const map = useMemo(() => getStaticIowaH3Map(resolution), [resolution]);
 
@@ -113,90 +120,15 @@ export function IowaH3MapPage() {
   );
 
   function handleZoomIn() {
-    const anchor = { x: MAP_VIEWBOX_WIDTH / 2, y: MAP_VIEWBOX_HEIGHT / 2 };
-    setViewport((current) => zoomAtPoint(current, anchor, current.zoom * ZOOM_STEP));
+    zoomFromCenter(ZOOM_STEP, MAP_VIEWBOX_WIDTH, MAP_VIEWBOX_HEIGHT);
   }
 
   function handleZoomOut() {
-    const anchor = { x: MAP_VIEWBOX_WIDTH / 2, y: MAP_VIEWBOX_HEIGHT / 2 };
-    setViewport((current) => zoomAtPoint(current, anchor, current.zoom / ZOOM_STEP));
+    zoomFromCenter(1 / ZOOM_STEP, MAP_VIEWBOX_WIDTH, MAP_VIEWBOX_HEIGHT);
   }
 
   function handleReset() {
-    setViewport(createInitialViewport());
-  }
-
-  function handleWheel(event: WheelEvent<SVGSVGElement>) {
-    event.preventDefault();
-    const bounds = event.currentTarget.getBoundingClientRect();
-    const anchor = screenPointFromClient(event.clientX, event.clientY, bounds);
-    const factor = Math.exp(-event.deltaY * 0.0014);
-    setViewport((current) => zoomAtPoint(current, anchor, current.zoom * factor));
-  }
-
-  function handlePointerDown(event: PointerEvent<SVGSVGElement>) {
-    if (event.button !== 0) {
-      return;
-    }
-
-    const cellId = getCellIdFromTarget(event.target);
-    dragStateRef.current = {
-      pointerId: event.pointerId,
-      startX: event.clientX,
-      startY: event.clientY,
-      startPanX: viewport.panX,
-      startPanY: viewport.panY,
-      startCellId: cellId,
-      moved: false,
-    };
-    event.currentTarget.setPointerCapture(event.pointerId);
-  }
-
-  function handlePointerMove(event: PointerEvent<SVGSVGElement>) {
-    const state = dragStateRef.current;
-    if (!state || state.pointerId !== event.pointerId) {
-      return;
-    }
-
-    const bounds = event.currentTarget.getBoundingClientRect();
-    const scaleX = MAP_VIEWBOX_WIDTH / bounds.width;
-    const scaleY = MAP_VIEWBOX_HEIGHT / bounds.height;
-    const deltaX = event.clientX - state.startX;
-    const deltaY = event.clientY - state.startY;
-    const movedDistance = Math.hypot(deltaX, deltaY);
-
-    if (!state.moved && movedDistance >= DRAG_THRESHOLD_PX) {
-      state.moved = true;
-      setDragging(true);
-      setHoveredCellId(null);
-    }
-
-    if (state.moved) {
-      setViewport((current) => ({
-        ...current,
-        panX: state.startPanX + deltaX * scaleX,
-        panY: state.startPanY + deltaY * scaleY,
-      }));
-    }
-  }
-
-  function finishPointer(event: PointerEvent<SVGSVGElement>) {
-    const state = dragStateRef.current;
-    if (!state || state.pointerId !== event.pointerId) {
-      return;
-    }
-
-    if (!state.moved && state.startCellId) {
-      setSelectedCellId(state.startCellId);
-      setHoveredCellId(state.startCellId);
-    }
-
-    dragStateRef.current = null;
-    setDragging(false);
-
-    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
-      event.currentTarget.releasePointerCapture(event.pointerId);
-    }
+    resetViewport();
   }
 
   return (
@@ -213,14 +145,15 @@ export function IowaH3MapPage() {
           viewBox={`0 0 ${MAP_VIEWBOX_WIDTH} ${MAP_VIEWBOX_HEIGHT}`}
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerMove}
-          onPointerUp={finishPointer}
-          onPointerCancel={finishPointer}
+          onPointerUp={handlePointerUp}
+          onPointerCancel={handlePointerCancel}
           onPointerLeave={() => {
             if (!dragging) {
               setHoveredCellId(null);
             }
           }}
           onWheel={handleWheel}
+          onDoubleClick={handleReset}
         >
           <g transform={transformForViewport(viewport)}>
             {projectedCells.map((cell) => {
@@ -264,11 +197,9 @@ export function IowaH3MapPage() {
 
         <div className="map-overlay map-toolbar">
           <div className="map-heading">
-            {STATIC_MAP_MODE ? null : (
-              <Link className="map-back-link" to="/" aria-label="Back to search">
-                ←
-              </Link>
-            )}
+            <Link className="map-back-link" to="/map" aria-label="Back to USA map">
+              ←
+            </Link>
             <div>
               <p className="eyebrow">Spatial map</p>
               <h1>Iowa H3 grid</h1>

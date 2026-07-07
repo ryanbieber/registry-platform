@@ -1,12 +1,15 @@
 import { expect, test } from "@playwright/test";
 
-test("usa map fills the screen and supports hover, pan, and zoom", async ({ page }) => {
+test("usa map supports hover, pan, zoom, and Iowa drill-down", async ({ page }) => {
   await page.goto("/#/map");
 
   const svg = page.locator(".usa-map-svg");
   const iowa = page.locator('[data-state-name="Iowa"]');
+  const texas = page.locator('[data-state-name="Texas"]');
 
   await expect(page.getByLabel("Interactive USA map with Iowa active")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "USA overview" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Open Iowa grid" })).toBeVisible();
   await expect(svg).toHaveAttribute("data-active-state", "Iowa");
   await expect(svg).toHaveAttribute("data-zoom", "1.000");
   await expect(svg).toHaveAttribute("data-selected-state", "");
@@ -16,8 +19,8 @@ test("usa map fills the screen and supports hover, pan, and zoom", async ({ page
   await iowa.hover();
   await expect(svg).toHaveAttribute("data-hovered-state", "Iowa");
 
-  await iowa.click();
-  await expect(svg).toHaveAttribute("data-selected-state", "Iowa");
+  await texas.click();
+  await expect(svg).toHaveAttribute("data-selected-state", "Texas");
 
   const box = await svg.boundingBox();
   if (!box) {
@@ -47,4 +50,8 @@ test("usa map fills the screen and supports hover, pan, and zoom", async ({ page
   await expect(svg).toHaveAttribute("data-zoom", "1.000");
   await expect(svg).toHaveAttribute("data-pan-x", "0.00");
   await expect(svg).toHaveAttribute("data-pan-y", "0.00");
+
+  await iowa.click();
+  await expect(page).toHaveURL(/#\/map\/iowa$/);
+  await expect(page.getByRole("heading", { name: "Iowa H3 grid" })).toBeVisible();
 });
